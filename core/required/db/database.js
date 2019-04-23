@@ -13,6 +13,7 @@ class Database {
 
     this.adapter = null;
     this._useLogColor = 0;
+    this._hideDbLogs = false;
 
   }
 
@@ -21,6 +22,8 @@ class Database {
     if (typeof cfg === 'string') {
       cfg = {connectionString: cfg};
     }
+
+    this._hideDbLogs = cfg.hideDbLogs || false;
 
     const Adapter = require(ADAPTERS[cfg.adapter] || ADAPTERS[DEFAULT_ADAPTER]);
     this.adapter = new Adapter(this, cfg);
@@ -38,6 +41,10 @@ class Database {
   }
 
   log(sql, params, time) {
+
+    if (this._hideDbLogs) {
+      return true;
+    }
 
     let colorFunc = this.__logColorFuncs[this._useLogColor];
 
